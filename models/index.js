@@ -1,4 +1,5 @@
 const models = {
+  userModule: require("./mongo/user"),
   articulosModel: require("./mongo/articulos"),
 };
 
