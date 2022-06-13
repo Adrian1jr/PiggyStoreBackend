@@ -4,22 +4,29 @@ const login = async (req, res) => {
   const { usuario, contrasena } = req.body;
 
   try {
-    const user = await userModule.findOne({
-      where: {
-        usuario,
-        contrasena,
-      },
-    });
+    const userInfo = await userModule.findOne({ where: { usuario: usuario } });
 
-    if (!user) {
-      return res.status(404).json({
-        message: "Usuario o contraseña incorrectos",
+    if (!userInfo) {
+      return res.status(400).json({
+        message: "Usuario no encontrado.",
+      });
+    }
+
+    if (userInfo.usuario !== usuario) {
+      return res.status(400).json({
+        message: "Este usuario no existe.",
+      });
+    }
+
+    if (userInfo.contrasena !== contrasena) {
+      return res.status(400).json({
+        message: "Contraseña incorrecta.",
       });
     }
 
     res.json({
       ok: true,
-      user,
+      user: userInfo,
     });
   } catch (error) {
     return res.status(500).json({
@@ -49,7 +56,6 @@ const register = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       msg: "Hubo un error, favor de contactar al administrador.",
     });
